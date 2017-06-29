@@ -142,9 +142,12 @@ stackup.pop({TRANSFER PARAMETERS})
 (4)’CHANGE’
 just change the current view to be another view, without modify the stack.
 
-stackup.change("view名稱",{TRANSFER PARAMETERS})
+stackup.change(“VIEW NAME”,{TRANSFER PARAMETERS})
 
-* Tip: You can use ‘CHANGE’ and setup current view name by ‘renew’ propose. furthermore, use the difference ‘TRANSFER PARAMETERS’ to renew the difference appearance.
+(5)’RELOAD’
+refresh current view. You should notice that it will not go into ‘onLoading’ lifecycle again while reload
+
+stackup.reload({TRANSFER PARAMETERS})
 
 
 ====================== License =====================
