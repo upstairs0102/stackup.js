@@ -1,0 +1,189 @@
+
+/*common*/
+body{
+    font-size: 15px;
+}
+
+a >span, btn>span {
+    font-size:15px;
+   
+}
+
+.checkbox, .radio {
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+.form-group{
+    margin:0px 0 0 0;    
+}
+
+.btn-group, .btn-group-vertical{
+    margin:0px;
+}
+
+.table{
+    width:100%;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+    padding:12px;
+    border-top:1px solid #ddd;
+    font-size:15px;
+}
+
+.radio .circle, label.radio-inline .circle {
+    height: 28px;
+    width: 28px;
+}
+.radio .check, label.radio-inline .check {
+    height: 28px;
+    width: 28px;
+}
+
+.table > tbody > tr.active > td, .table > tbody > tr.active > th, .table > tbody > tr > td.active, .table > tbody > tr > th.active, .table > tfoot > tr.active > td, .table > tfoot > tr.active > th, .table > tfoot > tr > td.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > thead > tr.active > th, .table > thead > tr > td.active, .table > thead > tr > th.active {
+    background-color: #dedddd;
+    color: black;
+    padding-top: 10px;
+}
+
+.togglebutton label input[type=checkbox]:checked+.toggle {
+    background-color: #03a9f4;
+}
+
+.togglebutton label input[type=checkbox]:checked+.toggle:after {
+    background-color: #03a9f4;
+}
+.togglebutton label .toggle:after {
+    top: -3px;
+}
+
+.radio input[type=radio]:checked~.circle, label.radio-inline input[type=radio]:checked~.circle {
+    border-color: #03a9f4;
+}
+.radio input[type=radio]:checked~.check, label.radio-inline input[type=radio]:checked~.check {
+    background-color: #03a9f4;
+}
+
+.title1{
+    font-size:36px  !important;
+}
+
+.title2{
+    font-size:32px  !important;
+}
+
+.title3{
+    font-size:28px  !important;
+}
+
+.title4{
+    font-size:24px  !important;
+}
+
+.font1{
+    font-size:20px  !important;
+}
+
+.font2{
+    font-size:17px !important;
+}
+
+.font3{
+    font-size:15px  !important;
+}
+
+.font4{
+    font-size:13px  !important;
+}
+    
+.btn{
+    background-color: #FF9800;
+    color:white;
+}
+
+
+
+/*guide view*/
+.guideView-xmpContainer{
+    overflow:hidden;
+}
+.guideView-xmpContainer > xmp{
+    float:right
+}
+
+#guide1View{
+    background-color: deepskyblue;
+    padding:30px;
+    color:white;
+}
+
+#guide2View{
+    background-color:darkturquoise;
+    padding:30px;
+    color:white;
+}
+
+#guide3View{
+    background-color:coral;
+    padding:30px;
+    color:white;
+}
+
+#guide4View{
+    background-color:crimson;
+    padding:30px;
+    color:white;
+}
+
+.guideView-content{
+    display:flex;
+    
+    position:sticky;
+    top:5vh;
+}
+
+.guideView-leftCol{
+    text-align:left;
+    vertical-align: middle;
+    overflow:hidden;
+    width:50%;
+}
+
+.guideView-rightCol{
+    text-align:right;
+    vertical-align: middle;
+    overflow:hidden;
+    width:50%;
+}
+
+/*home view*/
+.home-date{
+    font-size:10px;
+    color:#999999;
+}
+
+/*home-detail view*/
+#homeDetail-show{
+    font-size:64px;
+    text-align: center;
+}
+#homeDetail-title{
+    font-size:36px;
+    text-align: center;
+}
+.homeDetail-btn{
+    text-align:center;
+}
+
+/*function view*/
+#functionView{
+    background-color:#efefef; 
+    padding:15px;
+}
+
+#puppyView-click{
+    text-align:center;
+    margin-top:50px;
+}
+
