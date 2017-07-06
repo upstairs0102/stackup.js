@@ -1,5 +1,5 @@
-/* STACKUP v0.2.0 (alpha)
-This is a javascript based component and need to dependence jquery. More infomation see on Github Website.
+/* STACKUP v0.3.0 (alpha)
+This is a javascript plugin/framework for mobile style page and Single Page Application. More infomation see on Github Website.
 
 License
 Code and documentation copyright 2017 Shang De You
@@ -13,6 +13,7 @@ Contact: upstairs0102@gmail.com   */
 
 function stackup(initParam){
     
+    var windowWidth = window.innerWidth;
     var stackableToggle = true; //while stacking it'll be false to forbid another stacking task
     var reloadableToggle = true; //after reloading task start it'll be false to forbig another loading task
     var loadingTimmer = null;
@@ -399,6 +400,126 @@ function stackup(initParam){
     
     //=============== PRIVATE FUNCTION ===============
     
+    var emptyDomById = function(domId){
+        var dom = document.getElementById(domId);
+        while(dom.firstChild) {
+            dom.removeChild(dom.firstChild);
+        }
+    }
+    
+    var removeDomById = function(domId){
+        var dom = document.getElementById(domId);
+        if (dom){
+            dom.parentNode.removeChild(dom);
+        }
+    }
+    
+    var removeDomByClass = function(domClass){
+        var doms = document.getElementsByClassName(domClass);
+        if(doms){
+            for(var no in doms){
+                while(doms[0]){
+                    var dom = doms[0];
+                    dom.parentNode.removeChild(dom);
+                }
+            }
+        }
+    }
+    
+    var hide = function(domId){
+        document.getElementById(domId).style.opacity = 0;
+    }
+    
+    var show = function(domId){
+        document.getElementById(domId).style.opacity = 1;
+    }
+    
+    var fadeIn = function(domId, callback){
+        var value = 0;
+        var dom = document.getElementById(domId);
+        var doFadeIn = function(){
+            if(value>=1){
+                if(callback){
+                    callback();
+                }
+                return;
+            }
+            value = value+0.05;
+            dom.style.opacity = value;
+            setTimeout(function(){doFadeIn()},10); 
+        }
+        doFadeIn();
+    }
+    
+    var fadeOut = function(domId, callback){
+        var value = 1;
+        var dom = document.getElementById(domId);
+        var doFadeOut = function(){
+            if(value<=0){
+                if(callback){
+                    callback();
+                }
+                return;
+            }
+            value=value-0.05;
+            dom.style.opacity= value;
+            setTimeout(function(){doFadeOut()},10); 
+        }
+        doFadeOut();
+    }
+    
+    var slideX = function(domId, targetX, callback){
+        var dom = document.getElementById(domId); 
+        var x = dom.offsetLeft; 
+        var doSlideLeft = function(){
+            x=x-20;
+            if(x <= targetX){
+                dom.style.left = String(targetX) + "px";
+                if(callback){
+                    callback();
+                }
+                return;
+            }
+            dom.style.left= String(x) + "px";
+            setTimeout(function(){doSlideLeft()},10); 
+        }
+        var doSlideRight = function(){
+            x=x+20;
+            if(x >= targetX){
+                dom.style.left = String(targetX) + "px";
+                if(callback){
+                    callback();
+                }
+                return;
+            }
+            dom.style.left= String(x) + "px";
+            setTimeout(function(){doSlideRight()},10); 
+        }
+        if(x > targetX){
+            doSlideLeft();
+        }else{
+            doSlideRight();
+        }
+    }
+    
+    var loadHtml = function(domId, htmlName, callback) {
+       var con = document.getElementById(domId);
+       var xhr = new XMLHttpRequest();
+
+       xhr.onreadystatechange = function (e) { 
+           if (xhr.readyState == 4 && xhr.status == 200) {
+               con.innerHTML = xhr.responseText;
+               if(callback){
+                   callback();
+               }
+           }
+       }
+
+       xhr.open("GET", htmlName, true);
+       xhr.setRequestHeader('Content-type', 'text/html');
+       xhr.send();
+    }
+    
     var isContainView = function(viewName){
         for(var no in viewNameList){
             var str = viewNameList[no].split("?");
@@ -411,74 +532,63 @@ function stackup(initParam){
     }
     
     var setViewTitle = function(title){
-        $(function(){
-            $("#stackup-view" + currentViewNo + "-navBar-title").html(title);
-        })
+        var domId = "stackup-view" + currentViewNo + "-navBar-title";
+        document.getElementById(domId).innerHTML = title;
     }
     
     //loading圖示
     var showLoading = function(){
-        $(function(){
-            if(loading.isShowLoading() == false){
-                return;
-            }
-            if($(".stackup-loading").length == 0){
-                var loadingHtml = loading.getLoadingHtml();
-                if(loadingHtml != ""){
-                    $("#stackup-view" + currentViewNo).append(loadingHtml);
-                }
-            }
-            //clean timer
-            if(loadingTimmer){
-                clearTimeout(loadingTimmer);
-                loadingTimmer = null;
-            }
-            var loadingOverTime = loading.getLoadingOverTime();
-            if(loadingOverTime != 0){ //if enabled
-                loadingTimmer = setTimeout(function(){//start timer
-                    loaded();
-                    var task = loading.getLoadingOverTimeTask();
-                    task();//over time task
-                },loadingOverTime);   
-            }
-        })
+        if(loading.isShowLoading() == false){
+            return;
+        }
+        var loadingHtml = loading.getLoadingHtml();
+        if(loadingHtml != ""){
+            var domId = "stackup-view" + currentViewNo;
+            document.getElementById(domId).insertAdjacentHTML('beforeend',loadingHtml);
+        }
+        //clean timer
+        if(loadingTimmer){
+            clearTimeout(loadingTimmer);
+            loadingTimmer = null;
+        }
+        var loadingOverTime = loading.getLoadingOverTime();
+        if(loadingOverTime != 0){ //if enabled
+            loadingTimmer = setTimeout(function(){//start timer
+                loaded();
+                var task = loading.getLoadingOverTimeTask();
+                task();//over time task
+            },loadingOverTime);   
+        }
     }
 
     //loading完成（移除全部loading圖示）
     var hideLoading = function(){
-        $(function(){
-            if(loading.isShowLoading() == false){
-                return;
-            }
-            if(loadingTimmer){
-                clearTimeout(loadingTimmer);
-                loadingTimmer = null;
-            }
-            $(".stackup-loading").remove();
-        })
+        if(loading.isShowLoading() == false){
+            return;
+        }
+        if(loadingTimmer){
+            clearTimeout(loadingTimmer);
+            loadingTimmer = null;
+        }
+        removeDomByClass("stackup-loading");
     }
     
     var showSystemLoading = function(){
-        $(function(){
-            if(loading.isShowLoading() == false || loading.isShowSystemLoading()==false){
-                return;
-            }
-            if($(".stackup-systemLoading").length == 0){
-                var loadingHtml = loading.getSystemLoadingHtml();
-                if(loadingHtml != ""){
-                    $("#stackup-view" + currentViewNo).append(loadingHtml);
-                }
-            }
-        })
+        if(loading.isShowLoading() == false || loading.isShowSystemLoading()==false){
+            return;
+        }
+        var loadingHtml = loading.getSystemLoadingHtml();
+        if(loadingHtml != ""){
+            var domId = "stackup-view" + currentViewNo;
+            document.getElementById(domId).insertAdjacentHTML('beforeend',loadingHtml);
+        }
     }
     
     var hideSystemLoading = function(){
-        $(function(){
-            if(loading.isShowLoading() == false || loading.isShowSystemLoading() == false){
-                return;
-            }
-            $(".stackup-systemLoading").remove();
-        })
+        if(loading.isShowLoading() == false || loading.isShowSystemLoading() == false){
+            return;
+        }
+        removeDomByClass("stackup-systemLoading");
     }
 
     //設定使用者選單按鈕樣式
@@ -496,11 +606,39 @@ function stackup(initParam){
         var menuItems = menuParams["items"];
         for(var no in menuItems){
             if(menuItems[no].firstView == selectedViewName){
-                $("#stackup-tabBar-item" + no + "> img").attr("src",menuItems[no].selectedIconImg);
-                $("#stackup-tabBar-item" + no +"> .stackup-tabBar-item-text").attr("style", "color:"+menuParams.selectedTextColor);
+                var doms = document.getElementById("stackup-tabBar-item" + no).getElementsByTagName("img");
+                for(var domNo in doms){
+                    if(isNaN(domNo)){
+                        continue;
+                    }
+                    var dom = doms[domNo];
+                    dom.setAttribute("src",menuItems[no].selectedIconImg);
+                }
+                var doms = document.getElementById("stackup-tabBar-item" + no).getElementsByClassName("stackup-tabBar-item-text");
+                for(var domNo in doms){
+                    if(isNaN(domNo)){
+                        continue;
+                    }
+                    var dom = doms[domNo];
+                    dom.style.color = menuParams.selectedTextColor;
+                }
             }else{
-                $("#stackup-tabBar-item" + no + "> img").attr("src",menuItems[no].iconImg);
-                $("#stackup-tabBar-item" + no +"> .stackup-tabBar-item-text").attr("style", "color:"+menuParams.textColor);
+                var doms = document.getElementById("stackup-tabBar-item" + no).getElementsByTagName("img");
+                for(var domNo in doms){
+                    if(isNaN(domNo)){
+                        continue;
+                    }
+                    var dom = doms[domNo];
+                    dom.setAttribute("src",menuItems[no].iconImg);
+                }
+                var doms = document.getElementById("stackup-tabBar-item" + no).getElementsByClassName("stackup-tabBar-item-text");
+                for(var domNo in doms){
+                    if(isNaN(domNo)){
+                        continue;
+                    }
+                    var dom = doms[domNo];
+                    dom.style.color = menuParams.textColor;
+                }
             }
         }
     }
@@ -508,18 +646,26 @@ function stackup(initParam){
     //=============== PUBLIC FUNCTION  ===============
     
     this.initStage = function(initParam){
-        $(function(){
+        if(document.getElementById('stackup')){
+            doInitStage();
+        }else{
+            //if dom not loaded yet
+            document.addEventListener('DOMContentLoaded', function(event){
+                doInitStage();
+            });  
+        }
+        function doInitStage(){
             stage.setStageHtml(initParam);
             var html = stage.getStageHtml();
-            $("#stackup").html(html);
-        })
+            document.getElementById("stackup").innerHTML = html;
+        }
     }
     
     this.prepare = function(viewName, action, callback){
         if(!viewName || !action || !callback){
             return;
         }
-        if(action != "onLoading" && action != "onLoaded" && action != "onAppear"){
+        if(action != "beforeLoading" && action != "onLoaded" && action != "onAppear"){
             return;
         }
         if(!callbackStorage[viewName]){
@@ -529,7 +675,15 @@ function stackup(initParam){
     }
 
     this.first = function(toLoadViewName, param){
-        $(function(){
+        if(document.getElementById('stackup-container')){
+            doFirst();
+        }else{
+            //if dom not loaded yet
+            document.addEventListener('DOMContentLoaded', function(event){
+                doFirst();
+            });  
+        }
+        function doFirst(){
             if(stackableToggle == false){
                 return;
             }
@@ -539,7 +693,7 @@ function stackup(initParam){
             stackableToggle = false;
             reloadableToggle = true;
             isViewLoaded = false;
-            
+
             var injection = {
                 data: param,
                 loading:{
@@ -554,18 +708,19 @@ function stackup(initParam){
             currentViewNo = 0;
             currentViewName = toLoadViewName;
             viewNameStack = [currentViewName];
-            $("#stackup-container").empty();
-            $("#stackup-container").css("left","0px");
-            $("#stackup-container").css("width",$(window).width());
+            emptyDomById("stackup-container");
+            document.getElementById("stackup-container").style.left = "0px";
+            document.getElementById("stackup-container").style.width = windowWidth+"px";
 
             var viewHtml = view.getViewHtml(currentViewNo, currentViewName);
-            $("#stackup-container").append(viewHtml);
 
-            $(".stackup-view-content").hide();
+            document.getElementById("stackup-container").insertAdjacentHTML('beforeend',viewHtml);
+
+            hide("stackup-view0-content");
 
             if(callbackStorage[currentViewName] != null){
-                if(callbackStorage[currentViewName]["onLoading"] != null){
-                    callbackStorage[currentViewName]["onLoading"](injection);
+                if(callbackStorage[currentViewName]["beforeLoading"] != null){
+                    callbackStorage[currentViewName]["beforeLoading"](injection);
                 }
             }
 
@@ -580,7 +735,7 @@ function stackup(initParam){
                 return;
             }
             //loading
-            $("#stackup-view0-content").load(loadHtmlUrl, function () { 
+            loadHtml("stackup-view0-content", loadHtmlUrl, function(){
                 //loaded
                 stackableToggle = true;
                 isViewLoaded = true;
@@ -590,16 +745,16 @@ function stackup(initParam){
                         callbackStorage[currentViewName]["onLoaded"](injection);
                     }
                 }
-                
+
                 if(loading.isShowSystemLoading() == true){
                     hideSystemLoading();
                 }
-                
+
                 //showing
-                $("#stackup-view0-content").fadeIn(function(){
+                fadeIn("stackup-view0-content", function(){
                     //showed
                     setTabBarBtnCurrentSelected(currentViewName);
-                    
+
                     if(callbackStorage[currentViewName] != null){
                         if(callbackStorage[currentViewName]["onAppear"] != null){
                             callbackStorage[currentViewName]["onAppear"](injection);
@@ -609,182 +764,174 @@ function stackup(initParam){
 
 
             });
-        })
+        }
     }
 
     this.push = function(toLoadViewName,param){
-        $(function(){
-            if(!toLoadViewName){
-                return
+        if(!toLoadViewName){
+            return
+        }
+        if(stackableToggle == false && reloadableToggle == false){
+            return;
+        }
+        stackableToggle = false;
+        reloadableToggle = true;
+        isViewLoaded = false;
+        isViewMoved = false;
+
+        var injection = {
+            data: param,
+            loading:{
+                show: showLoading,
+                hide: hideLoading
+            },
+            navBar:{
+                setTitle:setViewTitle
             }
-            if(stackableToggle == false && reloadableToggle == false){
-                return;
+        }
+
+        var originalViewNo = currentViewNo;
+        currentViewNo += 1;
+        currentViewName = toLoadViewName;
+        viewNameStack.push(toLoadViewName);
+
+        var containerWidthString = String(viewNameStack.length * windowWidth) + "px";
+        document.getElementById("stackup-container").style.width = containerWidthString;
+
+        var viewHtml = view.getViewHtml(currentViewNo, currentViewName);
+        document.getElementById("stackup-view"+originalViewNo).insertAdjacentHTML('afterend',viewHtml);
+
+        hide("stackup-view" + currentViewNo + "-content");
+
+        if(callbackStorage[currentViewName] != null){
+            if(callbackStorage[currentViewName]["beforeLoading"] != null){
+                callbackStorage[currentViewName]["beforeLoading"](injection);
             }
-            stackableToggle = false;
-            reloadableToggle = true;
-            isViewLoaded = false;
-            isViewMoved = false;
-            
-            var injection = {
-                data: param,
-                loading:{
-                    show: showLoading,
-                    hide: hideLoading
-                },
-                navBar:{
-                    setTitle:setViewTitle
-                }
-            }
+        }
 
-            var originalViewNo = currentViewNo;
-            currentViewNo += 1;
-            currentViewName = toLoadViewName;
-            viewNameStack.push(toLoadViewName);
-
-            $("#stackup-container").css("width", viewNameStack.length * $(window).width());
-
-            var viewHtml = view.getViewHtml(currentViewNo, currentViewName);
-            $("#stackup-view" + originalViewNo).after(viewHtml);	
-
-            $("#stackup-view" + currentViewNo + "-content").hide();
-            
-            if(callbackStorage[currentViewName] != null){
-                if(callbackStorage[currentViewName]["onLoading"] != null){
-                    callbackStorage[currentViewName]["onLoading"](injection);
-                }
-            }
-
+        if(loading.isShowSystemLoading() == true){
+            showSystemLoading();
+        }
+        var loadHtmlUrl = currentViewName + ".html";
+        if(reloadableToggle == false){ //if it have been reloaded while this task continuing
             if(loading.isShowSystemLoading() == true){
-                showSystemLoading();
+                hideSystemLoading();
             }
-            var loadHtmlUrl = currentViewName + ".html";
-            if(reloadableToggle == false){ //if it have been reloaded while this task continuing
-                if(loading.isShowSystemLoading() == true){
-                    hideSystemLoading();
-                }
-                return;
-            }else{
-                //loading
-                $("#stackup-view" + currentViewNo + "-content").load(loadHtmlUrl, function () {
-                    //loaded
-                    isViewLoaded = true;
-                    stackableToggle = true;
-                    
-                    //showing
-                    $("#stackup-view" + currentViewNo + "-content").fadeIn(function(){
-                        //showed
-                    });
-                    
-                    if(callbackStorage[currentViewName] != null){
-                        if(callbackStorage[currentViewName]["onLoaded"] != null){
-                            callbackStorage[currentViewName]["onLoaded"](injection);
-                        }
-                    }
+            return;
+        }else{
+            //loading
+            loadHtml("stackup-view" + currentViewNo + "-content", loadHtmlUrl, function(){
+                //loaded
+                isViewLoaded = true;
+                stackableToggle = true;
 
-                    //loaded & moved (if one of them not completed then continue)
-                    if (isViewLoaded == true && isViewMoved == true) {
-                        if(loading.isShowSystemLoading() == true){
-                            hideSystemLoading();
-                        }
-                        
-                        if(reloadableToggle == false){ //if it have been reloaded
-                            return;
-                        }
-                        if(callbackStorage[currentViewName]["onAppear"] != null){
-                            callbackStorage[currentViewName]["onAppear"](injection);
-                        }
-                           
-                    }
+                //showing
+                fadeIn("stackup-view" + currentViewNo + "-content", function(){
+                    //showed
                 });
-            }
-            
-            //moving (moving and loading as same time)
-            //var arrivalX = $("#stackup-container").offset().left-$(window).width();
-            var arrivalX = -currentViewNo*$(window).width();
-            $("#stackup-container").stop(true, false).animate({ "left": arrivalX }, 500, function () {
 
-                //moved
-                isViewMoved = true;
-                
+                if(callbackStorage[currentViewName] != null){
+                    if(callbackStorage[currentViewName]["onLoaded"] != null){
+                        callbackStorage[currentViewName]["onLoaded"](injection);
+                    }
+                }
+
                 //loaded & moved (if one of them not completed then continue)
                 if (isViewLoaded == true && isViewMoved == true) {
                     if(loading.isShowSystemLoading() == true){
                         hideSystemLoading();
                     }
-                    
-                    if(reloadableToggle == false){ //if it have been reloaded while this task continuing
+
+                    if(reloadableToggle == false){ //if it have been reloaded
                         return;
                     }
-                    if(callbackStorage[currentViewName] != null){
-                        if(callbackStorage[currentViewName]["onAppear"] != null){
-                            callbackStorage[currentViewName]["onAppear"](injection);
-                        }
+                    if(callbackStorage[currentViewName]["onAppear"] != null){
+                        callbackStorage[currentViewName]["onAppear"](injection);
                     }
-                    
-                } 
+
+                }
             });
-        })    
+        }
+
+        //moving (moving and loading as same time)
+        var arrivalX = -currentViewNo*windowWidth;
+        slideX("stackup-container", arrivalX, function(){
+
+            //moved
+            isViewMoved = true;
+
+            //loaded & moved (if one of them not completed then continue)
+            if (isViewLoaded == true && isViewMoved == true) {
+                if(loading.isShowSystemLoading() == true){
+                    hideSystemLoading();
+                }
+
+                if(reloadableToggle == false){ //if it have been reloaded while this task continuing
+                    return;
+                }
+                if(callbackStorage[currentViewName] != null){
+                    if(callbackStorage[currentViewName]["onAppear"] != null){
+                        callbackStorage[currentViewName]["onAppear"](injection);
+                    }
+                }
+
+            } 
+        });
     }
 
     this.pop = function(param){
-        $(function(){
-            if(currentViewNo == 0){
-                return;
+        if(currentViewNo == 0){
+            return;
+        }
+        if(stackableToggle == false){
+            return;
+        }
+        if(isViewMoved == false){
+            return;
+        }
+        isViewMoved = false;
+        stackableToggle = false;
+        reloadableToggle = true;
+
+        var injection = {
+            data: param,
+            loading:{
+                show: showLoading,
+                hide: hideLoading
+            },
+            navBar:{
+                setTitle:setViewTitle
             }
-            if(stackableToggle == false){
-                return;
-            }
-            if(isViewMoved == false){
-                return;
-            }
-            isViewMoved = false;
-            stackableToggle = false;
-            reloadableToggle = true;
-            
-            var injection = {
-                data: param,
-                loading:{
-                    show: showLoading,
-                    hide: hideLoading
-                },
-                navBar:{
-                    setTitle:setViewTitle
+        }
+
+        fadeOut("stackup-view" + currentViewNo+ "-content");
+
+        currentViewNo -= 1;
+        currentViewName = viewNameStack[currentViewNo];
+        viewNameStack.pop();
+
+        //moving
+        var arrivalX = -currentViewNo*windowWidth;
+        slideX("stackup-container", arrivalX, function(){
+
+            //moved
+            removeDomById("stackup-view" + (currentViewNo + 1));
+
+            var containerWidthString = String(viewNameStack.length * windowWidth) + "px";
+            document.getElementById("stackup-container").style.width = containerWidthString;
+
+            //showed
+            if(callbackStorage[currentViewName] != null){
+                if(callbackStorage[currentViewName]["onAppear"] != null){
+                    callbackStorage[currentViewName]["onAppear"](injection);
                 }
             }
 
-            $("#stackup-view" + currentViewNo+ "-content").fadeOut();
-            
-            currentViewNo -= 1;
-            currentViewName = viewNameStack[currentViewNo];
-            viewNameStack.pop();
+            setTabBarBtnCurrentSelected(currentViewName);
 
-            //moving
-            //var arrivalX = $("#stackup-container").offset().left+$(window).width();
-            var arrivalX = -currentViewNo*$(window).width();
-            $("#stackup-container").stop(true,false).animate({"left":arrivalX},500,function(){
-
-                //moved
-                $("#stackup-view" + (currentViewNo + 1)).remove();
-                
-                $("#stackup-container").css("width", viewNameStack.length * $(window).width());
-
-                //showing
-                $("#stackup-view" + currentViewNo + "-content").fadeIn(function(){
-                    //showed
-                    if(callbackStorage[currentViewName] != null){
-                        if(callbackStorage[currentViewName]["onAppear"] != null){
-                            callbackStorage[currentViewName]["onAppear"](injection);
-                        }
-                    }
-                });
-                
-                setTabBarBtnCurrentSelected(currentViewName);
-                
-                isViewMoved = true;
-                stackableToggle = true;
-            }); 
-        })
-        
+            isViewMoved = true;
+            stackableToggle = true;
+        }); 
     }
     
     this.change = function(toLoadViewName, param){
@@ -810,15 +957,15 @@ function stackup(initParam){
             }
         }
         
-        $("#stackup-view" + (currentViewNo)).empty();
+        emptyDomById("stackup-view" + (currentViewNo));
         var viewHtml = view.getViewHtml(currentViewNo, currentViewName);
-        $("#stackup-view" + (currentViewNo)).append(viewHtml);
+        document.getElementById("stackup-view" + currentViewNo).insertAdjacentHTML('beforeend',viewHtml);
         
         var loadHtmlUrl = currentViewName + ".html";
 
         if(callbackStorage[currentViewName] != null){
-            if(callbackStorage[currentViewName]["onLoading"] != null){
-                callbackStorage[currentViewName]["onLoading"](injection);
+            if(callbackStorage[currentViewName]["beforeLoading"] != null){
+                callbackStorage[currentViewName]["beforeLoading"](injection);
             }
         }
         
@@ -832,7 +979,7 @@ function stackup(initParam){
             return;
         }
         //loading
-        $("#stackup-view" + currentViewNo + "-content").load(loadHtmlUrl, function () {
+        loadHtml("stackup-view" + currentViewNo + "-content", loadHtmlUrl, function(){
             //loaded
             if(loading.isShowSystemLoading() == true){
                 hideSystemLoading();
@@ -849,15 +996,12 @@ function stackup(initParam){
                 }
             }
             
-            //showing
-            $("#stackup-view" + currentViewNo + "-content").fadeIn(function(){
-                //showed
-                if(callbackStorage[currentViewName] != null){
-                    if(callbackStorage[currentViewName]["onAppear"] != null){
-                        callbackStorage[currentViewName]["onAppear"](injection);
-                    }
+            //showed
+            if(callbackStorage[currentViewName] != null){
+                if(callbackStorage[currentViewName]["onAppear"] != null){
+                    callbackStorage[currentViewName]["onAppear"](injection);
                 }
-            }); 
+            }
         })
         
     }
@@ -877,9 +1021,9 @@ function stackup(initParam){
             }
         }
         
-        $("#stackup-view" + (currentViewNo)).empty();
+        emptyDomById("stackup-view" + (currentViewNo));
         var viewHtml = view.getViewHtml(currentViewNo, currentViewName);
-        $("#stackup-view" + (currentViewNo)).append(viewHtml);
+        document.getElementById("stackup-view" + currentViewNo).insertAdjacentHTML('beforeend',viewHtml);
         
         var loadHtmlUrl = currentViewName + ".html";
         
@@ -888,7 +1032,7 @@ function stackup(initParam){
         }
         
         //loading
-        $("#stackup-view" + currentViewNo + "-content").load(loadHtmlUrl, function () {
+        loadHtml("stackup-view" + currentViewNo + "-content", loadHtmlUrl, function(){
             
             //loaded
             if(loading.isShowSystemLoading() == true){
@@ -915,13 +1059,13 @@ function stackup(initParam){
     }
     
     //---------------- container width resize ----------------
-    $(window).resize(function() {
+    window.addEventListener('resize', function(event){
+        windowWidth = window.innerWidth;
         var viewNo = currentViewNo;
-        $('#stackup-container').css("left",-viewNo*$(window).width());
-        $('#stackup-container').css("width",(viewNo+1)*$(window).width());
-    }).trigger('resize');
-
-    
+        var dom = document.getElementById("stackup-container");
+        dom.style.left = String(-viewNo*windowWidth) + "px";
+        dom.style.width = String((viewNo+1)*windowWidth) + "px";
+    });
 }
     
 

@@ -53,14 +53,17 @@ var stageSetting = {
 };
 
 //---------- Stage 1 ----------
-
 var stackup = new stackup();
 
-//initializing the stage (base on parameters)
-stackup.initStage();
+//$(function(){ // <-- it's not necessary
+    
+    //initializing the stage (base on parameters)
+    stackup.initStage();
 
-//stacking the first view
-stackup.first("views/guide1");
+    //stacking the first view
+    stackup.first("views/guide1");
+//})
+
 
 //prepare the view's script...
 stackup.prepare("views/guide1","onLoaded",function(){
@@ -99,7 +102,7 @@ stackup.prepare("views/guide4","onLoaded",function(){
 var jsonData = []; // as a public variable
 
 //views/home
-stackup.prepare("views/home","onLoading",function(view){
+stackup.prepare("views/home","beforeLoading",function(view){
     
     view.navBar.setTitle("Home Page");
     
@@ -154,7 +157,7 @@ stackup.prepare("views/home","onLoaded",function(view){
 })
 
 //views/home-detail
-stackup.prepare("views/home-detail","onLoading",function(view){
+stackup.prepare("views/home-detail","beforeLoading",function(view){
     
     view.navBar.setTitle("Selected Name");
     

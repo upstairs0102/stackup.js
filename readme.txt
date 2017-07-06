@@ -1,6 +1,6 @@
-STACKUP v0.2.0 (alpha)
+STACKUP v0.3.0 (alpha)
 
-STACKUP is a javascript based web component, a very easily solution for build a website for MOBILE DEVICE or CROSS-PLATFORM (browsing both on mobile phone and pc). Mainly feature is, this solution see the main page as ‘STAGE’ and html block as a ‘VIEW’, through stacking actions to ‘PUSH’ or ‘POP’ views on the stage, Implementation a SPA(Single Page Application) ‘APP APPEARANCE WEBSITE’.
+STACKUP is a javascript plugin/framework for SPA(Single Page Application), a very easily solution to build a website for MOBILE DEVICE or CROSS-PLATFORM (browsing both on mobile phone and pc). Mainly feature of the framework, main page is ‘STAGE’ and html block is a ‘VIEW’, through stacking actions to ‘PUSH’ or ‘POP’ views on the stage, Implementation a ‘APP APPEARANCE WEBSITE’.
 
 
 More information and version updates please see on Github Website.
@@ -12,7 +12,6 @@ More information and version updates please see on Github Website.
 
 1. stackup.js
 2. stickup.css
-3. jquery.js (dependency libaray, please download on jQuery website and chose the version you prefer)
 
 
 
@@ -86,9 +85,9 @@ stackup.initStage({
 3.Prepare each view's script
 Preparing scripts for each VIEW and each LIFECYCLE
 
-(1)prepare - onLoading：Starting to load html file (not completed load yet, so please don’t do any control for html doms cause it’s very highly possibility to be fail!!)
+(1)prepare - beforeLoading：Starting to load html file (not completed load yet, so please don’t do any control for html doms cause it’s very highly possibility to be fail!!)
 
-stackup.prepare(“VIEW NAME”,”onLoading",function(view){
+stackup.prepare(“VIEW NAME”,”beforeLoading",function(view){
     //..your scripts..
 })
 
@@ -145,7 +144,7 @@ just change the current view to be another view, without modify the stack.
 stackup.change(“VIEW NAME”,{TRANSFER PARAMETERS})
 
 (5)’RELOAD’
-refresh current view. You should notice that it will not go into ‘onLoading’ lifecycle again while reload
+refresh current view. You should notice that it will not go into ‘beforeLoading’ lifecycle again while reload
 
 stackup.reload({TRANSFER PARAMETERS})
 
