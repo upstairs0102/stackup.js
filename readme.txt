@@ -1,4 +1,4 @@
-STACKUP v0.3.0 (alpha)
+STACKUP v0.3.1 (alpha)
 
 STACKUP is a javascript plugin/framework for SPA(Single Page Application), a very easily solution to build a website for MOBILE DEVICE or CROSS-PLATFORM (browsing both on mobile phone and pc). Mainly feature of the framework, main page is ‘STAGE’ and html block is a ‘VIEW’, through stacking actions to ‘PUSH’ or ‘POP’ views on the stage, Implementation a ‘APP APPEARANCE WEBSITE’.
 

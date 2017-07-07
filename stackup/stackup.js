@@ -1,4 +1,4 @@
-/* STACKUP v0.3.0 (alpha)
+/* STACKUP v0.3.1 (alpha)
 This is a javascript plugin/framework for mobile style page and Single Page Application. More infomation see on Github Website.
 
 License
@@ -14,6 +14,9 @@ Contact: upstairs0102@gmail.com   */
 function stackup(initParam){
     
     var windowWidth = window.innerWidth;
+    var animationTime = 250; //slide left and slide right
+    var pushFadeIn = true;
+    var popFadeOut = true;
     var stackableToggle = true; //while stacking it'll be false to forbid another stacking task
     var reloadableToggle = true; //after reloading task start it'll be false to forbig another loading task
     var loadingTimmer = null;
@@ -471,8 +474,11 @@ function stackup(initParam){
     var slideX = function(domId, targetX, callback){
         var dom = document.getElementById(domId); 
         var x = dom.offsetLeft; 
+        var distence = targetX - x;
+        var perTimmer = 10;
+        var perSliding = distence/(animationTime/perTimmer);
         var doSlideLeft = function(){
-            x=x-20;
+            x=x+perSliding;
             if(x <= targetX){
                 dom.style.left = String(targetX) + "px";
                 if(callback){
@@ -481,10 +487,10 @@ function stackup(initParam){
                 return;
             }
             dom.style.left= String(x) + "px";
-            setTimeout(function(){doSlideLeft()},10); 
+            setTimeout(function(){doSlideLeft()},perTimmer); 
         }
         var doSlideRight = function(){
-            x=x+20;
+            x=x+perSliding;
             if(x >= targetX){
                 dom.style.left = String(targetX) + "px";
                 if(callback){
@@ -493,7 +499,7 @@ function stackup(initParam){
                 return;
             }
             dom.style.left= String(x) + "px";
-            setTimeout(function(){doSlideRight()},10); 
+            setTimeout(function(){doSlideRight()},perTimmer); 
         }
         if(x > targetX){
             doSlideLeft();
