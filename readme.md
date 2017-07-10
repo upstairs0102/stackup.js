@@ -6,7 +6,7 @@ STACKUP is a javascript plugin/framework for SPA(Single Page Application), a ver
 More information and version updates please see on Github Website.
 
 
-## Startup 
+# Startup 
 
 First of all, embed following files below in your html file:
 
@@ -30,16 +30,16 @@ And before starting, you need to now some rules and suggestions:
 2.STACKUP component has no limitation about where you coding scripts and how you place the scripts and another files (on this version). As my personal suggestion, you may independent each script as a file for each view, and embed all of them at first before the STACKUP component to be implement. 
 
 
-## Functions
+# Functions
 
-##### 1.Construct STACKUP component
+### 1.Construct STACKUP component
 Start to use a STACKUP component
 
     var stackup = new stackup()
 
 
 
-##### 2.Initializing a stage
+### 2.Initializing a stage
 Initializing a stage, and setting up parameters for appearance.
 
 *First, please name a id as “stackup” on a DOM where you will initialize up the stage(will append html of stage). If you’d like the stage as full screen, I suggestion name on <body>, for example:
@@ -84,7 +84,7 @@ Then, following script will initialize up the stage
 
 
 
-##### 3.Prepare each view's script
+### 3.Prepare each view's script
 Preparing scripts for each VIEW and each LIFECYCLE
 
 (1)prepare - beforeLoading：Starting to load html file (not completed load yet, so please don’t do any control for html doms cause it’s very highly possibility to be fail!!)
@@ -124,7 +124,7 @@ Each ‘VIEW NAME’-‘LIFE CYCLE’ is a SCOPE, every variables in each scope 
 
 
 
-##### 4.Stacking up!!
+### 4.Stacking up!!
 
 (1)’FIRST’ 
 set up the first view
@@ -152,7 +152,7 @@ refresh current view. You should notice that it will not go into ‘beforeLoadin
     stackup.reload({TRANSFER PARAMETERS})
 
 
-## License 
+# License 
 
 License
 Code and documentation copyright 2017 Shang De You
